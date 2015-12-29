@@ -24,7 +24,7 @@ RUN wget -qO - http://nginx.org/keys/nginx_signing.key | apt-key add -
 RUN apt-get update && apt-get install -y nginx \
 	&& rm -rf /var/lib/apt/lists/* 
 
-COPY nginx/index.php /var/www/index.php
+COPY nginx/index.html /var/www/index.html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
