@@ -5,7 +5,7 @@ MAINTAINER David <david@cninone.com>
 #    debconf: unable to initialize frontend: Dialog
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get install -y openssh-server software-properties-common python-software-properties supervisor nano
+RUN apt-get update && apt-get install -y openssh-server software-properties-common python-software-properties supervisor curl nano
 
 RUN mkdir -p /var/run/sshd /var/log/supervisor /var/log/nginx 
 
