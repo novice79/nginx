@@ -2,7 +2,8 @@
 
 apt-get update && apt-get install -y tzdata curl wget procps net-tools \
 	ca-certificates apt-transport-https sudo vim \
-	software-properties-common python-software-properties
+	software-properties-common python-software-properties \
+	letsencrypt
 
 TZ="Asia/Chongqing"
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
