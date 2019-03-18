@@ -1,0 +1,25 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "nodejs service for nginx",
+  "repository": "https://github.com/novice79/nginx.git",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "socket.io": "^2.2.0"
+  },
+  "bin": "app.js",
+  "pkg": {
+    "assets": [
+      "public/**/*"
+    ]
+  }
+}

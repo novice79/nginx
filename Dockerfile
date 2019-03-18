@@ -1,40 +1,36 @@
+FROM novice/build:latest as my_build
+WORKDIR /workspace
+
+COPY nodejs /workspace/nodejs
+COPY build_app.sh .
+RUN /workspace/build_app.sh
+
 FROM ubuntu:latest
-MAINTAINER David <david@cninone.com>
+LABEL maintainer="David <david@cninone.com>"
 
 # Get noninteractive frontend for Debian to avoid some problems:
 #    debconf: unable to initialize frontend: Dialog
 ENV DEBIAN_FRONTEND noninteractive
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8   
 
-RUN apt-get update && apt-get install -y openssh-server software-properties-common python-software-properties supervisor curl nano
+COPY ins_pack.sh /ins_pack.sh
+RUN /ins_pack.sh
 
-RUN mkdir -p /var/run/sshd /var/log/supervisor /var/log/nginx 
-
-RUN echo 'root:freego' | chpasswd
-RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-
-# SSH login fix. Otherwise user is kicked off after login
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-
-ENV NOTVISIBLE "in users profile"
-RUN echo "export VISIBLE=now" >> /etc/profile
-
-# nginx
-RUN printf '%s\n%s\n' "deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx" "deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx" >> /etc/apt/sources.list
-RUN wget -qO - http://nginx.org/keys/nginx_signing.key | apt-key add -
-RUN apt-get update && apt-get install -y nginx \
-	&& rm -rf /var/lib/apt/lists/* 
 
 COPY nginx/index.html /var/www/index.html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY nginx/letsencrypt /etc/nginx/letsencrypt
 COPY nginx/freego.crt /etc/ssl/freego.crt
 COPY nginx/freego.key /etc/ssl/freego.key
 
-RUN chown -R www-data:www-data /var/www
+COPY --from=my_build /workspace/app /app
 
-VOLUME ["/var/cache/nginx"]
+EXPOSE 80 443
 
-EXPOSE 22 80 443
+COPY init.sh /
 
-CMD ["/usr/bin/supervisord"]
+ENTRYPOINT ["/init.sh"]
+# CMD ["/init"]
