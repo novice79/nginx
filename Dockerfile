@@ -10,14 +10,12 @@ LABEL maintainer="David <david@cninone.com>"
 
 # Get noninteractive frontend for Debian to avoid some problems:
 #    debconf: unable to initialize frontend: Dialog
-ENV DEBIAN_FRONTEND noninteractive
-ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
-ENV LC_ALL en_US.UTF-8   
-
+ENV DEBIAN_FRONTEND noninteractive   
 COPY ins_pack.sh /ins_pack.sh
 RUN /ins_pack.sh
-
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8
 
 COPY nginx/index.html /var/www/index.html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
