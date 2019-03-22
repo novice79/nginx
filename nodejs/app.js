@@ -28,11 +28,11 @@ app.get('/', function(req, res, next) {
     req.session.views = 1
     res.end('welcome to the session demo. refresh!')
   }
-})
+});
 io.on('connection', function (socket) {
   socket.emit('hello', 'I am sock server')
   socket.on('world', (data) => console.log(data));
-})
+});
 
 (function start_nginx() {
   const nginx = exec( `nginx` );
