@@ -33,3 +33,15 @@ io.on('connection', function (socket) {
   socket.emit('hello', 'I am sock server')
   socket.on('world', (data) => console.log(data));
 })
+
+(function start_nginx() {
+  const nginx = exec( `nginx` );
+  console.log(`start nginx reverse proxy`);
+  nginx.stdout.on('data', data => console.log(data));
+  nginx.stderr.on('data', data => console.log(data));
+  nginx.on('close', (code) => {
+      console.log(`nginx exited with code ${code}`);
+      // restart nginx
+      setTimeout(() => start_nginx(), 2000);
+  });
+})();

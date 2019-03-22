@@ -28,7 +28,5 @@ COPY --from=my_build /workspace/app /app
 
 EXPOSE 80 443
 
-COPY init.sh /
-
-ENTRYPOINT ["/init.sh"]
+ENTRYPOINT ["/app"]
 # CMD ["/init"]
