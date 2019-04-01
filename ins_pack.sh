@@ -14,7 +14,7 @@ printf '%s\n%s\n' "deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx" 
 wget -qO - http://nginx.org/keys/nginx_signing.key | apt-key add -
 apt-get update && apt-get install -y nginx \
 	&& rm -rf /var/lib/apt/lists/* 
-
+mkdir -p /etc/nginx/conf.d/http{,s} /etc/nginx/conf.d/default/http{,s}
 chown -R www-data:www-data /var/www
 
 rm -- "$0"

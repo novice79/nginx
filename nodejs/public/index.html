@@ -3,18 +3,25 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>wordpress+nodejs test</title>
+  <title>nginx https证书管理</title>
   <link href="css/index.css" rel="stylesheet" type="text/css" />
   <script src="libs/jquery-2.1.4.min.js"></script>
-  <script src="libs/qrious.min.js"></script>
+  <script src="libs/vue.min.js"></script>
   <script src="socket.io/socket.io.js"></script>
   <script src="libs/moment.js"></script>
 </head>
 
 <body>
   <div class="content">
-    <div class="demo">
-      
+    <div class="req-domain">
+      <input v-model="domain" placeholder="域名"/>
+      <input v-model="email" placeholder="申请者邮箱"/>
+      <button v-on:click="req_cert">请求证书</button>
+    </div>
+    <div class="certs">
+      <div v-for="c in certs">
+        {{ c }}&rArr;<input type="text" placeholder="服务地址，格式：ip/domain:port"/>
+      </div>
     </div>
     <div class="logs">
 
