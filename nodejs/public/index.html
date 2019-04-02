@@ -14,13 +14,14 @@
 <body>
   <div class="content">
     <div class="req-domain">
-      <input v-model="domain" placeholder="域名"/>
-      <input v-model="email" placeholder="申请者邮箱"/>
+      <input type="url" v-model="domain" placeholder="域名"/>
+      <input type="email" v-model="email" placeholder="申请者邮箱"/>
       <button v-on:click="req_cert">请求证书</button>
     </div>
     <div class="certs">
-      <div v-for="c in certs">
-        {{ c }}&rArr;<input type="text" placeholder="服务地址，格式：ip/domain:port"/>
+      <div v-for="( service, domain ) in certs">
+        {{ domain }}&rArr;<input v-model="certs[domain]" placeholder="服务地址，格式：ip/domain:port"/>
+        <button @click="bind_svr(domain, certs[domain])">【域名-服务】绑定</button>
       </div>
     </div>
     <div class="logs">

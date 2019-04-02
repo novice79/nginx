@@ -27,14 +27,16 @@ body{
 .req-domain{
     display: flex;
     flex-direction: row;
-    width: 100%;
+    /* width: 100%; */
 }
 .certs{   
     padding: .5rem 5rem;
-    /* border-style: inset;
-    border-width: 2px; */
+    color: white;
+    border-style: inset;
+    border-width: 2px;
     display: flex;
     flex-direction: column;
+    min-width: 50vw;
     min-height: 80vh;
     
 }
@@ -58,11 +60,11 @@ i {
 button{
     background-color: lightcoral;
     font-weight: bold;
-    margin-top: .5em;
+    margin: .5em;
     border-radius: .6em;
 }
 input[type="text"]{
-    margin-top: .5em;
+    margin: .5em;
     border-radius: .4em;
     flex: 1;
 }

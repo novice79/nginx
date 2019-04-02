@@ -9,9 +9,10 @@ const bodyParser = require('body-parser')
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const util = require('./util');
+const record = "/etc/letsencrypt/cert2svr.json";
 let cert2svr = {};
-if (fs.existsSync("/etc/letsencrypt/cert2svr.json")) {
-  
+if (fs.existsSync(record)) {
+  cert2svr = JSON.parse(fs.readFileSync(record, 'utf8'));
 }
 nunjucks.configure(__dirname + '/views', { autoescape: true });
 app.use(require('express').static(__dirname + '/public'));
@@ -36,8 +37,15 @@ app.get('/test', function (req, res, next) {
     res.end('welcome to the session demo. refresh!')
   }
 });
+function update_record(domain, service) {
+  cert2svr[domain] = service;
+  fs.writeFileSync(record, JSON.stringify(cert2svr));
+  io.emit('exist-certs', cert2svr);
+}
 io.on('connection', function (socket) {
-  socket.emit('hello', 'I am sock server')
+  socket.emit('exist-certs', cert2svr);
+  // for test
+  // socket.emit('exist-certs', {'example.com':'127.0.0.1:8977'})
   socket.on('req-cert', data => {
     console.log(data);
     const le = spawn('letsencrypt', ['certonly', '--webroot', '-w', '/var/www/ssl-proof/', '--agree-tos', '--email', data.email, '-d', data.domain]);
@@ -54,11 +62,24 @@ io.on('connection', function (socket) {
     le.on('close', (code) => {
       if (code !== 0) {
         console.log(`le process exited with code ${code}`);
+        socket.emit('le-feedback', '申请SSL证书失败');
+        
       } else {
-        // const cfg = nunjucks.render('index.html', { foo: 'bar' });
-        // fs.writeFileSync(sql_init_file, cfg);
+        socket.emit('le-feedback', '申请SSL证书成功');
+        update_record(data.domain, '');
       }
     });
+  });
+  socket.on('bind-service', data => {
+    if(data.service){
+      const cfg = nunjucks.render('tmpl.conf', data);
+      fs.writeFileSync(`/etc/nginx/conf.d/https/${data.domain}.conf`, cfg);
+    } else {
+      execSync(`rm -f /etc/nginx/conf.d/https/${data.domain}.conf`);
+    }
+    update_record(data.domain, data.service);
+    execSync('service nginx reload');
+    socket.emit('svr-back', '绑定服务成功');
   });
 });
 

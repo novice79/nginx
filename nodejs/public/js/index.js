@@ -6,6 +6,9 @@ sock.on('connect', function (data) {
 sock.on('le-feedback', function (data) {
     log(data)
 });
+sock.on('svr-back', function (data) {
+    log(data)
+});
 sock.on('exist-certs', function (data) {
     vm.$emit('exist-certs', data);
 });
@@ -19,7 +22,7 @@ var vm = new Vue({
     data: {
         domain: '',
         email: '',
-        certs: []
+        certs: {}
     },
     methods: {
         req_cert: function () {
@@ -31,6 +34,12 @@ var vm = new Vue({
                     email: this.email
                 })
             }
+        },
+        bind_svr: function (d, s) {
+            sock.emit('bind-service', {
+                domain: d,
+                service: s
+            })
         }
     }
 })
