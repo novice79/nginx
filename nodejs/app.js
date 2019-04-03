@@ -12,15 +12,6 @@ const CronJob = require('cron').CronJob;
 const util = require('./util');
 const record = "/etc/letsencrypt/cert2svr.json";
 let cert2svr = {};
-if (fs.existsSync(record)) {
-  cert2svr = JSON.parse(fs.readFileSync(record, 'utf8'));
-  for (const [domain, service] of Object.entries(cert2svr)) {
-    if(service){
-      const cfg = nunjucks.render('tmpl.conf', {domain, service});
-      fs.writeFileSync(`/etc/nginx/conf.d/https/${domain}.conf`, cfg);
-    }
-  }
-}
 // 1st of every month at 3 am
 const job = new CronJob('0 0 3 1 * *', () => {
   const exe_log = execSync('letsencrypt renew').toString().trim();
@@ -96,7 +87,15 @@ io.on('connection', function (socket) {
     socket.emit('svr-back', '绑定服务成功');
   });
 });
-
+if (fs.existsSync(record)) {
+  cert2svr = JSON.parse(fs.readFileSync(record, 'utf8'));
+  for (const [domain, service] of Object.entries(cert2svr)) {
+    if(service){
+      const cfg = nunjucks.render('tmpl.conf', {domain, service});
+      fs.writeFileSync(`/etc/nginx/conf.d/https/${domain}.conf`, cfg);
+    }
+  }
+}
 (function start_nginx() {
   const nginx = exec(`nginx`);
   console.log(`start nginx reverse proxy`);
