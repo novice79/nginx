@@ -14,7 +14,7 @@ const record = "/etc/letsencrypt/cert2svr.json";
 let cert2svr = {};
 if (fs.existsSync(record)) {
   cert2svr = JSON.parse(fs.readFileSync(record, 'utf8'));
-  for (const [domain, service] of cert2svr) {
+  for (const [domain, service] of Object.entries(cert2svr)) {
     if(service){
       const cfg = nunjucks.render('tmpl.conf', {domain, service});
       fs.writeFileSync(`/etc/nginx/conf.d/https/${domain}.conf`, cfg);
