@@ -122,7 +122,7 @@ async function noty_login_fail(ip) {
     if (process.env.ACCESS_TOKEN) {
         try {
             const res = await request.post({
-                url: 'http://f2b:7000',
+                url: 'http://f2b:7000/login-failed',
                 json: {
                     token: process.env.ACCESS_TOKEN,
                     ip
