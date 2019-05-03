@@ -47,7 +47,8 @@ function getDirs(path = '/etc/letsencrypt/live/') {
         fs.readdirSync(path).forEach((file, index) => {
             const curPath = path[path.length-1] == '/' ? `${path}${file}` : `${path}/${file}`;
             if (fs.lstatSync(curPath).isDirectory()) { 
-                dirs.push(curPath);
+                // dirs.push(curPath);
+                dirs.push(file);
             } 
         });
     }

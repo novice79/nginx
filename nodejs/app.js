@@ -126,6 +126,7 @@ io.on('connection', function (socket) {
     delete services[data.addr];
     fs.writeFileSync(record, JSON.stringify(services));
     io.emit('exist-svrs', services);
+    socket.emit('svr-back', '删除服务成功');
   });
 });
 if (fs.existsSync(record)) {

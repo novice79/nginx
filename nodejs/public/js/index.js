@@ -47,6 +47,10 @@ var vm = new Vue({
             }
         },
         bind_svr: function () {
+            const svr_domain = this.svr_domain.trim() || 'default';
+            if(this.protocol == 'https' && this.certs.indexOf(svr_domain) < 0){
+                return log(`尚未申请${svr_domain}证书，不能绑定https服务`);           
+            }
             if(!this.inner_svr){
                 return log('请填写内部服务地址');
             }
@@ -55,7 +59,7 @@ var vm = new Vue({
             if(svr_path[svr_path.length -1] != '/') svr_path += '/';
             sock.emit('bind-service', {
                 protocol: this.protocol,
-                svr_domain: this.svr_domain.trim() || 'default',
+                svr_domain,
                 svr_path,
                 inner_svr: this.inner_svr,
             })
