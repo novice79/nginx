@@ -42,7 +42,10 @@ app.get('/test', function (req, res, next) {
     res.end('welcome to the session demo. refresh!')
   }
 });
-
+console.log(`process.env.USERNAME=${process.env.USERNAME}`);
+console.log(`process.env.PASSWD=${process.env.PASSWD}`);
+console.log(`process.env.TOKEN_PASS=${process.env.TOKEN_PASS}`);
+console.log(`process.env.ACCESS_TOKEN=${process.env.ACCESS_TOKEN}`);
 function update_record(data) {
   // {
   //   protocol: this.protocol,
@@ -60,8 +63,21 @@ io.on('connection', function (socket) {
   socket.emit('exist-certs', util.getDirs() );
   // for test
   // socket.emit('exist-svrs', {'example.com':'127.0.0.1:8977'})
+  socket.on('login', (data, cb) => {
+    if( data.user_name == process.env.USERNAME && data.password == process.env.PASSWD ){
+      cb({ret: 0, token: util.sign_token_1h()});
+    } else{
+      const ip = util.get_ip_by_sock(socket);
+      console.log('login failed ip: ' + ip);
+      util.noty_login_fail(ip);
+      cb({ret: -1});
+    }
+  });
   socket.on('req-cert', data => {
-    console.log(data);
+    // console.log(data);
+    if( !util.verify_token(data.token) ){
+      return socket.emit('svr-back', 'token非法');
+    }
     const le = spawn('letsencrypt', ['certonly', '--webroot', '-w', '/var/www/ssl-proof/', '--agree-tos', '--email', data.email, '-d', data.domain]);
     le.stdout.on('data', output => {
       socket.emit('le-feedback', output.toString())
@@ -85,6 +101,9 @@ io.on('connection', function (socket) {
     });
   });
   socket.on('bind-service', data => {
+    if( !util.verify_token(data.token) ){
+      return socket.emit('svr-back', 'token非法');
+    }
     // {
     //   protocol: this.protocol,
     //   svr_domain: this.svr_domain || 'default',
@@ -115,6 +134,9 @@ io.on('connection', function (socket) {
     socket.emit('svr-back', '绑定服务成功');
   });
   socket.on('del-service', data => {
+    if( !util.verify_token(data.token) ){
+      return socket.emit('svr-back', 'token非法');
+    }
     const svr = services[data.addr];
     const fn = svr.svr_path.replace(/\//gi, '_');
     if(svr.svr_domain == 'default'){

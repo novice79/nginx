@@ -23,9 +23,15 @@ var vm = new Vue({
         });
         this.$root.$on("exist-svrs", data => {
             this.svrs = data
-        });
+        });              
+    },
+    mounted: function () {
+        this.token = sessionStorage.getItem("token");
     },
     data: {
+        user_name: '',
+        password: '',
+        token: '',
         protocol: 'http',
         domain: '',
         email: '',
@@ -36,11 +42,28 @@ var vm = new Vue({
         inner_svr: '',
     },
     methods: {
+        login: function () {
+            const user_name = this.user_name;
+            const password = this.password;
+            this.user_name = this.password = '';
+            sock.emit('login', {
+                user_name,
+                password
+            }, res=>{
+                if(res.ret == 0){
+                    sessionStorage.setItem('token', res.token);
+                    this.token = res.token;
+                } else {
+                    alert('登陆失败');
+                }
+            });            
+        },
         req_cert: function () {
             if (!this.domain || !this.email) {
                 alert('域名或邮箱不能为空');
             } else {
                 sock.emit('req-cert', {
+                    token: this.token,
                     domain: this.domain,
                     email: this.email
                 })
@@ -58,6 +81,7 @@ var vm = new Vue({
             if(svr_path[0] != '/') svr_path = '/' + svr_path;
             if(svr_path[svr_path.length -1] != '/') svr_path += '/';
             sock.emit('bind-service', {
+                token: this.token,
                 protocol: this.protocol,
                 svr_domain,
                 svr_path,
@@ -65,7 +89,10 @@ var vm = new Vue({
             })
         },
         del_svr: function (addr) {
-            sock.emit('del-service', {addr});
+            sock.emit('del-service', {
+                token: this.token,
+                addr
+            });
         }
     }
 })

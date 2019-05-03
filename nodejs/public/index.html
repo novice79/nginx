@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <div class="content">
+  <div class="content" v-if="token">
     <div class="req-domain">
       <input type="url" v-model="domain" placeholder="域名"/>
       <input type="email" v-model="email" placeholder="申请者邮箱"/>
@@ -54,6 +54,11 @@
         </div>      
     </div>
     <div class="logs"></div>
+  </div>
+  <div class="login" v-else>
+    <input v-model="user_name" placeholder="用户名"/>
+    <input type="password" v-model="password" placeholder="密码"/>
+    <button @click="login()" :disabled="!(user_name && password)">登陆</button>
   </div>
   <script src="js/index.js"></script>
 </body>
