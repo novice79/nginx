@@ -12,17 +12,28 @@ sock.on('svr-back', function (data) {
 sock.on('exist-certs', function (data) {
     vm.$emit('exist-certs', data);
 });
+sock.on('exist-svrs', function (data) {
+    vm.$emit('exist-svrs', data);
+});
 var vm = new Vue({
     el: '.content',
     created: function () {
         this.$root.$on("exist-certs", data => {
             this.certs = data
         });
+        this.$root.$on("exist-svrs", data => {
+            this.svrs = data
+        });
     },
     data: {
+        protocol: 'http',
         domain: '',
         email: '',
-        certs: {}
+        certs: [],
+        svrs: {},
+        svr_domain: '',
+        svr_path: '',
+        inner_svr: '',
     },
     methods: {
         req_cert: function () {
@@ -35,11 +46,22 @@ var vm = new Vue({
                 })
             }
         },
-        bind_svr: function (d, s) {
+        bind_svr: function () {
+            if(!this.inner_svr){
+                return log('请填写内部服务地址');
+            }
+            let svr_path = this.svr_path || '/';
+            if(svr_path[0] != '/') svr_path = '/' + svr_path;
+            if(svr_path[svr_path.length -1] != '/') svr_path += '/';
             sock.emit('bind-service', {
-                domain: d,
-                service: s
+                protocol: this.protocol,
+                svr_domain: this.svr_domain.trim() || 'default',
+                svr_path,
+                inner_svr: this.inner_svr,
             })
+        },
+        del_svr: function (addr) {
+            sock.emit('del-service', {addr});
         }
     }
 })

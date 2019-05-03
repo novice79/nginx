@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>nginx https证书管理</title>
+  <title>nginx https证书管理/服务配置</title>
   <link href="css/index.css" rel="stylesheet" type="text/css" />
   <script src="libs/jquery-2.1.4.min.js"></script>
   <script src="libs/vue.min.js"></script>
@@ -18,14 +18,41 @@
       <input type="email" v-model="email" placeholder="申请者邮箱"/>
       <button v-on:click="req_cert">请求证书</button>
     </div>
-    <div class="certs">
-      <div v-for="( service, domain ) in certs">
-        {{ domain }}&rArr;<input v-model="certs[domain]" placeholder="服务地址，格式：ip/domain:port"/>
-        <button @click="bind_svr(domain, certs[domain])">【域名-服务】绑定</button>
-      </div>
+    <div class="svr-bind">
+        <!-- <h2>当前协议：{{protocol}}</h2> -->
+        <div>
+          <label class="radio-group">
+            http
+            <input type="radio" checked="checked" value="http" name="radio" v-model="protocol">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div>
+          <label class="radio-group">
+            https
+            <input type="radio" checked="checked" value="https" name="radio" v-model="protocol">
+            <span class="checkmark"></span>
+          </label>
+        </div>
+      <input type="url" v-model="svr_domain" placeholder="域名"/>
+      <input type="url" v-model="svr_path" placeholder="路径"/>
+      <input type="url" v-model="inner_svr" placeholder="服务地址，格式：ip/domain:port"/>
+      <button v-on:click="bind_svr">绑定服务</button>
     </div>
-    <div class="logs">
-
+    <div class="available">
+      <div class="certs">
+        已有证书：
+        <div v-for="cert in certs">
+            <div>{{ cert }}</div>
+        </div>
+      </div>
+      <div class="svrs">
+          已绑定服务：
+          <div v-for="( svr, addr ) in svrs">
+            {{ addr }}&rArr;{{svr.inner_svr}} <button @click="del_svr(addr)">删除</button>
+          </div>
+        </div>
+      <div class="logs"></div>
     </div>
 
   </div>

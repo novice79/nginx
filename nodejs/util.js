@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 function pad(num, size) {
     let s = num + "";
     while (s.length < size) s = "0" + s;
@@ -39,7 +41,20 @@ function clearDir(path) {
         }
     });
 }
+function getDirs(path = '/etc/letsencrypt/live/') {
+    const dirs = [];
+    if(fs.existsSync(path)){
+        fs.readdirSync(path).forEach((file, index) => {
+            const curPath = path[path.length-1] == '/' ? `${path}${file}` : `${path}/${file}`;
+            if (fs.lstatSync(curPath).isDirectory()) { 
+                dirs.push(curPath);
+            } 
+        });
+    }
+    return dirs;
+}
 module.exports = {
     deleteFolderRecursive,
-    clearDir
+    clearDir,
+    getDirs
 }
