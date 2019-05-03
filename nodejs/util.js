@@ -53,8 +53,14 @@ function getDirs(path = '/etc/letsencrypt/live/') {
     }
     return dirs;
 }
+function delFile(fn){
+    if( fs.existsSync(fn) ){
+        fs.unlinkSync(fn);
+    }
+}
 module.exports = {
     deleteFolderRecursive,
     clearDir,
-    getDirs
+    getDirs,
+    delFile
 }

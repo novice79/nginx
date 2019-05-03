@@ -104,9 +104,9 @@ io.on('connection', function (socket) {
       }
       fs.writeFileSync(`${cd}/${data.svr_domain}/${fn}.conf`, cfg);
       if(data.protocol == 'https'){
-        fs.unlinkSync(`/etc/nginx/conf.d/http/${data.svr_domain}/${fn}.conf`);
+        util.delFile(`/etc/nginx/conf.d/http/${data.svr_domain}/${fn}.conf`);
       } else {
-        fs.unlinkSync(`/etc/nginx/conf.d/https/${data.svr_domain}/${fn}.conf`);
+        util.delFile(`/etc/nginx/conf.d/https/${data.svr_domain}/${fn}.conf`);
       }
     }
     update_record(data);
@@ -117,9 +117,9 @@ io.on('connection', function (socket) {
     const svr = services[data.addr];
     const fn = svr.svr_path.replace(/\//gi, '_');
     if(svr.svr_domain == 'default'){
-      fs.unlinkSync(`/etc/nginx/conf.d/default/${svr.protocol}/${fn}.conf`);
+      util.delFile(`/etc/nginx/conf.d/default/${svr.protocol}/${fn}.conf`);
     } else {
-      fs.unlinkSync(`/etc/nginx/conf.d/${svr.protocol}/${svr.svr_domain}/${fn}.conf`);
+      util.delFile(`/etc/nginx/conf.d/${svr.protocol}/${svr.svr_domain}/${fn}.conf`);
     }
     execSync('service nginx reload');
     delete services[data.addr];
