@@ -25,7 +25,7 @@ COPY nginx/freego.crt /etc/ssl/freego.crt
 COPY nginx/freego.key /etc/ssl/freego.key
 
 COPY --from=my_build /workspace/app /app
-
+WORKDIR /etc/nginx/conf.d
 EXPOSE 80 443
 
 ENTRYPOINT ["/app"]

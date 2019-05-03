@@ -49,7 +49,7 @@ function update_record(data) {
   //   svr_path: this.sv_path || '/',
   //   inner_svr: this.inner_svr,
   // }
-  const url = `${data.protocol}://${data.svr_domain}${svr_path}`;
+  const url = `${data.protocol}://${data.svr_domain}${data.svr_path}`;
   services[url] = data;
   fs.writeFileSync(record, JSON.stringify(services));
   io.emit('exist-svrs', services);
