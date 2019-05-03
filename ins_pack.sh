@@ -1,7 +1,7 @@
 #!/bin/bash
 
 apt-get update && apt-get install -y tzdata curl wget procps net-tools \
-	ca-certificates apt-transport-https sudo vim \
+	ca-certificates apt-transport-https sudo vim tree \
 	software-properties-common locales tzdata \
 	letsencrypt && locale-gen en_US.UTF-8
 

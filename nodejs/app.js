@@ -42,6 +42,7 @@ app.get('/test', function (req, res, next) {
     res.end('welcome to the session demo. refresh!')
   }
 });
+
 function update_record(data) {
   // {
   //   protocol: this.protocol,

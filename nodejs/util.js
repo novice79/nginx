@@ -58,6 +58,18 @@ function delFile(fn){
         fs.unlinkSync(fn);
     }
 }
+function stringifyError(err, filter, space) {
+    var plainObject = {};
+    Object.getOwnPropertyNames(err).forEach(function (key) {
+        plainObject[key] = err[key];
+    });
+    return JSON.stringify(plainObject, filter, space);
+};
+process.on('uncaughtException', (err)=> {
+    console.log('uncaughtException: ', err);
+    const err_str = stringifyError(err, null, 4);
+    console.error(err_str);
+});
 module.exports = {
     deleteFolderRecursive,
     clearDir,
