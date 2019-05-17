@@ -74,6 +74,7 @@ var vm = new Vue({
             if(this.protocol == 'https' && this.certs.indexOf(svr_domain) < 0){
                 return log(`尚未申请${svr_domain}证书，不能绑定https服务`);           
             }
+            this.inner_svr.trim();
             if(!this.inner_svr){
                 return log('请填写内部服务地址');
             }

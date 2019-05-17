@@ -110,7 +110,7 @@ io.on('connection', function (socket) {
     //   svr_path: this.sv_path || '/',
     //   inner_svr: this.inner_svr,
     // }
-    const cfg = nunjucks.render('path.conf', data);
+    const cfg = data.inner_svr[0] === '/' ? nunjucks.render('path.conf', data): nunjucks.render('svr.conf', data);
     const fn = data.svr_path.replace(/\//gi, '_');
     if(data.svr_domain == 'default'){     
       fs.writeFileSync(`/etc/nginx/conf.d/default/${data.protocol}/${fn}.conf`, cfg);
@@ -154,7 +154,7 @@ io.on('connection', function (socket) {
 if (fs.existsSync(record)) {
   services = JSON.parse(fs.readFileSync(record, 'utf8'));
   for (const [url, data] of Object.entries(services)) {
-    const cfg = nunjucks.render('path.conf', data);
+    const cfg = data.inner_svr[0] === '/' ? nunjucks.render('path.conf', data): nunjucks.render('svr.conf', data);
     const fn = data.svr_path.replace(/\//gi, '_');
     if(data.svr_domain == 'default'){     
       fs.writeFileSync(`/etc/nginx/conf.d/default/${data.protocol}/${fn}.conf`, cfg);
