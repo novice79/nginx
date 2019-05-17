@@ -37,7 +37,7 @@
         </div>
         <input type="url" v-model="svr_domain" placeholder="域名" />
         <input type="url" v-model="svr_path" placeholder="路径" />
-        <input type="url" v-model="inner_svr" placeholder="服务地址，格式：ip/domain:port(or /path)" />
+        <input type="url" v-model="inner_svr" placeholder="服务地址:ip/domain:port or /path" />
         <button v-on:click="bind_svr">绑定服务</button>
       </div>
       <div class="available">

@@ -78,6 +78,9 @@ var vm = new Vue({
             if(!this.inner_svr){
                 return log('请填写内部服务地址');
             }
+            if(this.inner_svr[0] === '/' && this.inner_svr[this.inner_svr.length -1] != '/'){
+                this.inner_svr += '/';
+            }
             let svr_path = this.svr_path || '/';
             if(svr_path[0] != '/') svr_path = '/' + svr_path;
             if(svr_path[svr_path.length -1] != '/') svr_path += '/';
