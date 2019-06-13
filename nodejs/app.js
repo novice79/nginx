@@ -12,8 +12,9 @@ const CronJob = require('cron').CronJob;
 const util = require('./util');
 const record = "/etc/letsencrypt/services.json";
 let services = {};
-// 1st of every month at 3 am
-const job = new CronJob('0 0 3 1 * *', () => {
+// 1st of every week at 3 am
+// m h  dom mon dow   command
+const job = new CronJob('0 0 3 * * 1', () => {
   const exe_log = execSync('letsencrypt renew').toString().trim();
   console.log(exe_log);
   execSync('service nginx reload');
