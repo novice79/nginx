@@ -6,7 +6,7 @@ COPY build_app.sh .
 RUN /workspace/build_app.sh
 
 FROM ubuntu:latest
-LABEL maintainer="David <david@cninone.com>"
+LABEL maintainer="David <novice@piaoyun.shop>"
 
 # Get noninteractive frontend for Debian to avoid some problems:
 #    debconf: unable to initialize frontend: Dialog
